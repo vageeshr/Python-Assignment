@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Python Flask Bucket List App</title>
+ 
+    
+    <link href="{{ url_for('static',filename='styles/css/bootstrap.min.css') }}" rel="stylesheet">
+ 
+    <link href="{{ url_for('static',filename='styles/css/jumbotron-narrow.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='styles/css/rto_form.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ url_for('static',filename='styles/js/jquery-3.3.1.min.js') }}"></script>
+    
+  </head>
+ 
+  <body>
+  <div id="snackbar">Some text some message..</div>
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" style="padding-right:10px"><a href="/">Home</a></li><br><br>
+          </ul>
+        </nav>
+        <h3 class="text-muted">RTO Managament Application</h3>
+      </div>
+ 
+      <div class="jumbotron">
+        <h1>New User details</h1>
+        <form class="form-signin">
+        <label for="inputName" class="sr-only">User ID</label>
+        <input type="name" name="UserID" id="UserID" class="form-control" placeholder="User ID" required autofocus>
+        <label for="inputEmail" class="sr-only">User Name</label>
+        <input type="name" name="UserName" id="UserName" class="form-control" placeholder="User Name" required autofocus>
+        <label for="inputEmail" class="sr-only">Vehicle Type</label>
+        <input type="name" name="VehicleType" id="VehicleType" class="form-control" placeholder="Vehicle Type" required autofocus>
+        <label for="inputEmail" class="sr-only">Vehicle Color</label>
+        <input type="name" name="VehicleColor" id="VehicleColor" class="form-control" placeholder="Vehicle Color" required autofocus>        
+        <button id="newUserPersist" class="btn btn-lg btn-primary btn-block" type="button">Register</button>
+      </form>
+      </div>
+ 
+       
+ 
+     
+ 
+    </div>
+
+    <script type="text/javascript">
+      $(function() {
+        $('#newUserPersist').click(function() {
+     
+            $.ajax({
+                url: '/User/persist',
+                data: $('form').serialize(),
+                type: 'POST',
+                success: function(response) {
+                    console.log(response)
+                    message = JSON.parse(response)
+                    var x = document.getElementById("snackbar");
+                    x.innerHTML = message.message;
+                    x.className = "show";
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    if(message.Number){
+                      x.innerHTML = "Success!. Vehicle Number is "+message.Number;
+                      x.className = "show";
+                      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
+                    }
+                    $("form").trigger('reset');
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+      });
+    });
+    </script>
+
+    <script type="text/javascript">
+      //reset ID input if it's not a valid integer
+        $('#UserID').keyup(function(){
+          if(isNaN(this.value)){
+            this.value = ''
+            var x = document.getElementById("snackbar");
+            x.innerHTML = "Please enter a valid number";
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+          }
+            
+        });
+          
+    </script>
+  </body>
+</html>
